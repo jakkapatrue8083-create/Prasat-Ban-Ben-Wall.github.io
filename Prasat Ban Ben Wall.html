@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prasat Ban Ben Wall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-4px, 2px) rotate(-1.5deg); }
+            40% { transform: translate(2px, -2px) rotate(1.5deg); }
+            60% { transform: translate(-4px, -1px) rotate(0deg); }
+            80% { transform: translate(4px, 2px) rotate(1.5deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+        .shake-effect {
+            animation: shake 0.45s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Dynamic Status Badge Effects */
+        .status-ready {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 95, 70, 0.4));
+            border: 2px solid #10b981;
+            color: #34d399;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4), inset 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+        .status-testing {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(180, 83, 9, 0.45));
+            border: 2px solid #f59e0b;
+            color: #fbbf24;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5), inset 0 0 10px rgba(245, 158, 11, 0.2);
+            animation: pulse-glow 1.2s infinite alternate;
+        }
+        .status-safe {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(4, 120, 87, 0.5));
+            border: 2px solid #10b981;
+            color: #6ee7b7;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.6), inset 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+        .status-failed {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(153, 27, 27, 0.6));
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.7), inset 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+            100% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.7); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- Header -->
+    <header class="bg-slate-900/90 border-b border-amber-600/30 p-4 sticky top-0 z-50 backdrop-blur-md shadow-2xl">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-br from-amber-500 to-amber-700 p-2.5 rounded-xl shadow-lg shadow-amber-500/20 text-slate-950 font-bold text-xl">
+                    🏛️
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500 bg-clip-text text-transparent">
+                        Prasat Ban Ben Wall
+                    </h1>
+                    <p class="text-xs text-slate-400">ระบบจำลองเสถียรภาพสถิตยศาสตร์ของโครงสร้างก่ออิฐ | ม.2 Interactive Simulation</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="bg-slate-800 text-slate-300 border border-slate-700 text-xs px-3 py-1.5 rounded-full flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Version 2.0 Enhanced
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Controls Panel -->
+        <div class="lg:col-span-4 bg-slate-900/80 p-6 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between space-y-6 backdrop-blur">
+            <div class="space-y-5">
+                <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                    <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2">
+                        <span>⚙️</span> พารามิเตอร์การทดลอง
+                    </h2>
+                    <span class="text-[11px] bg-slate-800 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded">Input Constraints</span>
+                </div>
+                
+                <!-- Pattern Selector -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">1. รูปแบบการจัดวางอิฐ (Pattern)</label>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <button onclick="setPattern('stack')" id="btn-stack" class="py-3 px-3 rounded-xl border-2 border-amber-500 bg-amber-500/15 text-amber-300 font-medium text-xs transition-all duration-200 shadow-md">
+                            <span class="text-sm font-bold block mb-0.5">Stack Bond</span>
+                            <span class="text-[10px] opacity-80 font-normal">เรียงตรงแนว (ไม่มีขัดกัน)</span>
+                        </button>
+                        <button onclick="setPattern('stretcher')" id="btn-stretcher" class="py-3 px-3 rounded-xl border-2 border-slate-700 bg-slate-800/60 text-slate-400 font-medium text-xs hover:border-slate-600 transition-all duration-200">
+                            <span class="text-sm font-bold block mb-0.5">Stretcher Bond</span>
+                            <span class="text-[10px] opacity-80 font-normal">เรียงสลับแนว (Interlocking)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dimensions Input -->
+                <div class="space-y-3 bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/80">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">2. มิติกำแพง (สูงสุด 30)</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-[11px] font-medium text-slate-300">จำนวนแถว (Rows)</label>
+                                <span class="text-[10px] text-slate-500">1 - 30</span>
+                            </div>
+                            <input type="number" id="rowsInput" value="6" min="1" max="30" onchange="validateInputs(); resetSim();" onkeyup="validateInputs(); resetSim();"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-amber-400 font-bold focus:outline-none focus:border-amber-500 transition">
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-[11px] font-medium text-slate-300">จำนวนหลัก (Cols)</label>
+                                <span class="text-[10px] text-slate-500">1 - 30</span>
+                            </div>
+                            <input type="number" id="colsInput" value="4" min="1" max="30" onchange="validateInputs(); resetSim();" onkeyup="validateInputs(); resetSim();"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-amber-400 font-bold focus:outline-none focus:border-amber-500 transition">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weight Input -->
+                <div class="bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/80">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">3. มวลกดทับ (Weight)</label>
+                        <span class="text-[10px] text-slate-500">สูงสุด 3,000 kg</span>
+                    </div>
+                    <div class="relative">
+                        <input type="number" id="weightInput" value="150" min="0" max="3000" step="10" onchange="validateInputs()" onkeyup="validateInputs()"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-3 pr-12 py-2.5 text-amber-400 font-bold text-lg focus:outline-none focus:border-amber-500 transition">
+                        <span class="absolute right-3 top-3 text-slate-500 text-xs font-bold">kg</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-2.5 pt-2">
+                    <button id="btn-run" onclick="startDropAnimation()" 
+                        class="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold py-3.5 px-4 rounded-xl text-sm transition-all duration-200 shadow-lg shadow-amber-600/25 flex items-center justify-center gap-2 active:scale-[0.98]">
+                        <span class="text-base">🚀</span> เริ่มปล่อยน้ำหนักทดสอบ (Run Test)
+                    </button>
+                    <button onclick="resetSim()" 
+                        class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-medium py-2.5 px-4 rounded-xl text-xs transition-all duration-200">
+                        🔄 รีเซ็ตการทดลอง (Reset)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mathematical Insights -->
+            <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-2.5 text-xs">
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-400">จำนวนบล็อกทั้งหมด:</span>
+                    <span id="total-bricks-text" class="text-slate-200 font-bold bg-slate-800 px-2 py-0.5 rounded border border-slate-700">24 ก้อน</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-2">
+                    <span class="text-slate-400">ขีดจำกัดสูงสุด (Max Capacity):</span>
+                    <span id="max-load-text" class="text-amber-400 font-extrabold text-sm bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">33 kg</span>
+                </div>
+                <div class="text-[11px] text-slate-400 leading-relaxed pt-1">
+                    <span class="text-amber-400 font-semibold">💡 หลักสถิตยศาสตร์:</span> 
+                    <span id="insight-text">การเรียงแบบตรงแนว แรงจะกระจายดิ่งลงทางเดียว ยิ่งเพิ่มความสูงยิ่งเสี่ยงต่อการโก่งเดาะ (Buckling)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas Display Area -->
+        <div id="canvas-container" class="lg:col-span-8 bg-slate-900/60 p-5 rounded-2xl border border-slate-800 shadow-xl flex flex-col items-center justify-between relative overflow-hidden backdrop-blur">
+            
+            <!-- HIGH VISIBILITY DYNAMIC STATUS BADGE -->
+            <div class="w-full flex justify-between items-center gap-4 mb-4 z-10">
+                <div id="status-badge" class="status-ready px-5 py-2.5 rounded-2xl text-sm font-bold flex items-center gap-3 transition-all duration-300">
+                    <span id="status-icon" class="text-base">🟢</span>
+                    <span id="status-text">พร้อมทำการทดสอบ (System Ready)</span>
+                </div>
+
+                <div class="bg-slate-900/90 border border-slate-800 px-4 py-2 rounded-2xl text-xs flex items-center gap-3 shadow-inner">
+                    <span class="text-slate-400 font-medium">มวลกดทับปัจจุบัน:</span>
+                    <span id="current-weight-display" class="text-amber-400 font-extrabold text-base tracking-wide">0 kg</span>
+                </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="w-full flex-1 flex items-center justify-center relative min-h-[420px] bg-slate-950 rounded-xl border border-slate-800/80 overflow-hidden shadow-inner">
+                <canvas id="simCanvas" width="750" height="480" class="w-full h-auto bg-slate-950"></canvas>
+            </div>
+
+            <!-- Visual Legend -->
+            <div class="w-full flex flex-wrap justify-between items-center text-[11px] text-slate-400 mt-4 pt-3 border-t border-slate-800/60 px-2 gap-2">
+                <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-600 inline-block border border-amber-500"></span> บล็อกศิลาแลงปกติ</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-rose-600 inline-block border border-rose-400"></span> จุดแตกร้าว/วิบัติ</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-400 inline-block"></span> มวลกดทับ</span>
+                </div>
+                <div class="text-slate-500 italic">
+                    * ควบคุมความเร็วการแสดงผลด้วย Canvas Vector Engine
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvas-container');
+        
+        let currentPattern = 'stack';
+        let animId = null;
+        let isAnimating = false;
+
+        // Input Constraints Validation & Clamping (Rows/Cols max 30, Weight max 3000)
+        function validateInputs() {
+            const rowsInput = document.getElementById('rowsInput');
+            const colsInput = document.getElementById('colsInput');
+            const weightInput = document.getElementById('weightInput');
+
+            if (rowsInput.value !== '') {
+                let val = parseInt(rowsInput.value);
+                if (isNaN(val) || val < 1) rowsInput.value = 1;
+                if (val > 30) rowsInput.value = 30;
+            }
+
+            if (colsInput.value !== '') {
+                let val = parseInt(colsInput.value);
+                if (isNaN(val) || val < 1) colsInput.value = 1;
+                if (val > 30) colsInput.value = 30;
+            }
+
+            if (weightInput.value !== '') {
+                let val = parseFloat(weightInput.value);
+                if (isNaN(val) || val < 0) weightInput.value = 0;
+                if (val > 3000) weightInput.value = 3000;
+            }
+
+            updateMetrics();
+        }
+
+        function calculateMaxLoad(rows, cols, pattern) {
+            const baseCapacity = 20;
+            if (pattern === 'stack') {
+                return Math.round((cols * baseCapacity) / Math.sqrt(rows));
+            } else {
+                const interlockFactor = 1.85;
+                const distributionFactor = 1 + (Math.log(rows) / 1.8);
+                return Math.round((cols * baseCapacity) * distributionFactor * interlockFactor);
+            }
+        }
+
+        function updateMetrics() {
+            const rows = parseInt(document.getElementById('rowsInput').value) || 1;
+            const cols = parseInt(document.getElementById('colsInput').value) || 1;
+            const maxLoad = calculateMaxLoad(rows, cols, currentPattern);
+
+            document.getElementById('total-bricks-text').innerText = `${rows * cols} ก้อน`;
+            document.getElementById('max-load-text').innerText = `${maxLoad.toLocaleString()} kg`;
+
+            const insightEl = document.getElementById('insight-text');
+            if (currentPattern === 'stack') {
+                insightEl.innerText = 'การเรียงแบบตรงแนว แรงจะกระจายดิ่งลงทางเดียว ยิ่งเพิ่มความสูงยิ่งเสี่ยงต่อการโก่งเดาะ (Buckling)';
+            } else {
+                insightEl.innerText = 'การเรียงแบบสลับแนว เกิดกลไก Interlocking ช่วยกระจายแรงออกด้านข้าง ทำให้ทนทานแรงกดสูงกว่าหลายเท่า';
+            }
+        }
+
+        function setStatus(type, message) {
+            const badge = document.getElementById('status-badge');
+            const icon = document.getElementById('status-icon');
+            const text = document.getElementById('status-text');
+
+            badge.className = 'px-5 py-2.5 rounded-2xl text-sm font-bold flex items-center gap-3 transition-all duration-300 ';
+
+            if (type === 'ready') {
+                badge.classList.add('status-ready');
+                icon.innerText = '🟢';
+            } else if (type === 'testing') {
+                badge.classList.add('status-testing');
+                icon.innerText = '⏳';
+            } else if (type === 'safe') {
+                badge.classList.add('status-safe');
+                icon.innerText = '🛡️';
+            } else if (type === 'failed') {
+                badge.classList.add('status-failed');
+                icon.innerText = '💥';
+            }
+            text.innerText = message;
+        }
+
+        function drawScene(weightY = -120, isImpact = false, collapseProgress = 0) {
+            const rows = parseInt(document.getElementById('rowsInput').value) || 1;
+            const cols = parseInt(document.getElementById('colsInput').value) || 1;
+            const weight = parseFloat(document.getElementById('weightInput').value) || 0;
+            const maxLoad = calculateMaxLoad(rows, cols, currentPattern);
+            const isFailed = weight > maxLoad;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Ground
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(20, 440, 710, 20);
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(20, 440, 710, 3);
+
+            // Dynamic Sizing for 30x30 Scale
+            const maxWallWidth = 550;
+            const maxWallHeight = 320;
+            const w = Math.max(12, Math.min(70, maxWallWidth / (cols + 1)));
+            const h = Math.max(8, Math.min(26, maxWallHeight / rows));
+
+            const wallWidth = cols * (w + 1.5);
+            const startX = (canvas.width - wallWidth) / 2;
+            const startY = 440 - h;
+
+            // Draw Bricks
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    let x = startX + c * (w + 1.5);
+                    let y = startY - r * (h + 1.5);
+
+                    if (currentPattern === 'stretcher' && r % 2 !== 0) {
+                        x += w / 2;
+                    }
+
+                    if (isImpact && isFailed) {
+                        const spreadFactor = collapseProgress * collapseProgress;
+                        if (currentPattern === 'stack') {
+                            x += (c % 2 === 0 ? -1 : 1) * (r + 1) * (spreadFactor * 8);
+                            y += (rows - r) * (spreadFactor * 6);
+                        } else {
+                            x += (c - (cols / 2)) * (spreadFactor * 10);
+                            y += (rows - r) * (spreadFactor * 4);
+                        }
+                    }
+
+                    ctx.fillStyle = (isImpact && isFailed) ? '#dc2626' : '#d97706';
+                    ctx.fillRect(x, y, w, h);
+                    ctx.strokeStyle = (isImpact && isFailed) ? '#7f1d1d' : '#78350f';
+                    ctx.lineWidth = Math.max(0.5, 1.5 - (rows * 0.03));
+                    ctx.strokeRect(x, y, w, h);
+                }
+            }
+
+            // Top Plate
+            const topY = startY - (rows - 1) * (h + 1.5) - (h > 12 ? 8 : 4);
+            const plateHeight = Math.max(4, h * 0.35);
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(startX - 10, topY, wallWidth + 20, plateHeight);
+            ctx.strokeStyle = '#94a3b8';
+            ctx.strokeRect(startX - 10, topY, wallWidth + 20, plateHeight);
+
+            // Weight Box
+            if (weightY > -100) {
+                const boxSize = Math.max(30, Math.min(55, 25 + Math.sqrt(weight)));
+                const boxX = (canvas.width / 2) - (boxSize / 2);
+                
+                ctx.fillStyle = (isImpact && isFailed) ? '#ef4444' : '#f59e0b';
+                ctx.beginPath();
+                ctx.roundRect(boxX, weightY, boxSize, boxSize, 6);
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold ' + Math.max(9, Math.min(13, boxSize * 0.28)) + 'px Prompt, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${weight}kg`, canvas.width / 2, weightY + (boxSize / 2) + 4);
+            }
+        }
+
+        function startDropAnimation() {
+            if (isAnimating) return;
+            validateInputs();
+
+            const rows = parseInt(document.getElementById('rowsInput').value) || 1;
+            const cols = parseInt(document.getElementById('colsInput').value) || 1;
+            const weight = parseFloat(document.getElementById('weightInput').value) || 0;
+            const maxLoad = calculateMaxLoad(rows, cols, currentPattern);
+            const isFailed = weight > maxLoad;
+
+            isAnimating = true;
+            const btnRun = document.getElementById('btn-run');
+            btnRun.disabled = true;
+            btnRun.classList.add('opacity-50', 'cursor-not-allowed');
+
+            document.getElementById('current-weight-display').innerText = `${weight.toLocaleString()} kg`;
+            setStatus('testing', `กำลังประมวลผลมวลกดทับ ${weight.toLocaleString()} kg...`);
+
+            const maxWallHeight = 320;
+            const h = Math.max(8, Math.min(26, maxWallHeight / rows));
+            const startY = 440 - h;
+            const topY = startY - (rows - 1) * (h + 1.5) - (h > 12 ? 8 : 4);
+            
+            const boxSize = Math.max(30, Math.min(55, 25 + Math.sqrt(weight)));
+            const targetY = topY - boxSize;
+
+            let currentY = -60;
+            let velocity = 3;
+            let gravity = 1.2;
+            let collapseProgress = 0;
+
+            function animLoop() {
+                if (currentY < targetY) {
+                    velocity += gravity;
+                    currentY += velocity;
+                    drawScene(currentY, false, 0);
+                    animId = requestAnimationFrame(animLoop);
+                } else {
+                    currentY = targetY;
+                    
+                    container.classList.add('shake-effect');
+                    setTimeout(() => container.classList.remove('shake-effect'), 450);
+
+                    if (isFailed) {
+                        function collapseLoop() {
+                            if (collapseProgress < 1) {
+                                collapseProgress += 0.04;
+                                drawScene(currentY, true, collapseProgress);
+                                animId = requestAnimationFrame(collapseLoop);
+                            } else {
+                                finishSim(true, maxLoad, weight);
+                            }
+                        }
+                        collapseLoop();
+                    } else {
+                        drawScene(currentY, true, 0);
+                        finishSim(false, maxLoad, weight);
+                    }
+                }
+            }
+            animLoop();
+        }
+
+        function finishSim(isFailed, maxLoad, weight) {
+            isAnimating = false;
+            const btnRun = document.getElementById('btn-run');
+            btnRun.disabled = false;
+            btnRun.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            if (isFailed) {
+                setStatus('failed', `วิบัติ! โครงสร้างพังทลาย (มวล ${weight.toLocaleString()} kg เกินขีดจำกัด ${maxLoad.toLocaleString()} kg)`);
+            } else {
+                setStatus('safe', `ปลอดภัย! โครงสร้างรับแรงกดได้สมบูรณ์ (ขีดจำกัดสูงสุด ${maxLoad.toLocaleString()} kg)`);
+            }
+        }
+
+        function setPattern(pattern) {
+            if (isAnimating) return;
+            currentPattern = pattern;
+            
+            const btnStack = document.getElementById('btn-stack');
+            const btnStretcher = document.getElementById('btn-stretcher');
+
+            if (pattern === 'stack') {
+                btnStack.className = 'py-3 px-3 rounded-xl border-2 border-amber-500 bg-amber-500/15 text-amber-300 font-medium text-xs transition-all duration-200 shadow-md';
+                btnStretcher.className = 'py-3 px-3 rounded-xl border-2 border-slate-700 bg-slate-800/60 text-slate-400 font-medium text-xs hover:border-slate-600 transition-all duration-200';
+            } else {
+                btnStretcher.className = 'py-3 px-3 rounded-xl border-2 border-amber-500 bg-amber-500/15 text-amber-300 font-medium text-xs transition-all duration-200 shadow-md';
+                btnStack.className = 'py-3 px-3 rounded-xl border-2 border-slate-700 bg-slate-800/60 text-slate-400 font-medium text-xs hover:border-slate-600 transition-all duration-200';
+            }
+            
+            validateInputs();
+            resetSim();
+        }
+
+        function resetSim() {
+            if (animId) cancelAnimationFrame(animId);
+            isAnimating = false;
+            
+            const btnRun = document.getElementById('btn-run');
+            btnRun.disabled = false;
+            btnRun.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            document.getElementById('current-weight-display').innerText = '0 kg';
+            setStatus('ready', 'พร้อมทำการทดสอบ (System Ready)');
+            
+            updateMetrics();
+            drawScene(-120, false, 0);
+        }
+
+        validateInputs();
+        resetSim();
+    </script>
+</body>
+</html>
